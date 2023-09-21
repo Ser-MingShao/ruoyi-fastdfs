@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>系统工具箱</title>
+	<link rel="stylesheet" href="/font.css" />
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+		}
+
+		.container {
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+
+		.containerBg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: -1;
+			width: 100%;
+			height: 414px;
+		}
+
+		.containerBotBg {
+			width: 100%;
+			height: calc(100% - 414px);
+			background-color: #F2F6FF;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			z-index: -1;
+		}
+
+		.container .title {
+			width: 100%;
+			padding-top: 59px;
+			padding-bottom: 64px;
+			text-align: center;
+			font-size: 45px;
+			color: #fff;
+			font-family: "FZZCHJW--GB1-0";
+		}
+
+		.container .title1 {
+			width: 100%;
+			padding-top: 10px;
+			padding-bottom: 64px;
+			text-align: center;
+			font-size: 25px;
+			color: #fff;
+			font-family: "FZZCHJW--GB1-0";
+		}
+
+		.fileBox {
+			width: 100%;
+			padding: 0 160px;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.fileBoxItem {
+			width: 30%;
+		}
+
+		.fileBoxType {
+			width: 100%;
+			border-top-left-radius: 20px;
+			border-top-right-radius: 20px;
+			background-color: #deeaff;
+		}
+
+		.fileBoxTypeCont {
+			text-align: center;
+			padding-top: 15px;
+			padding-bottom: 25px;
+			border-bottom: 1px solid #F0F5FF;
+		}
+
+		.fileTypeTxt {
+			display: block;
+			font-size: 22px;
+			color: #00A2FF;
+			font-family: "FZLTZHK--GBK1-0";
+		}
+
+		.fileTitle {
+			height: 50px;
+		}
+
+		ul {
+			list-style: none;
+		}
+
+		ul li {
+			height: 50px;
+			display: flex;
+			border-bottom: 1px solid #E8F0FF;
+			padding-left: 30px;
+			padding-right: 20px;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 14px;
+			color: #666666;
+			font-family: "PingFang-SC-Medium";
+		}
+
+		ul .fileInner {
+			height: 484px;
+			overflow-y: auto;
+			background-color: #fff;
+			border-bottom-left-radius: 20px;
+			border-bottom-right-radius: 20px;
+			box-shadow: 0px 10px 20px 0px rgba(23, 59, 114, 0.1);
+		}
+
+		.fileInner::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		.fileInner::-webkit-scrollbar-track {
+			background-color: #f5f5f5;
+		}
+
+		.fileInner::-webkit-scrollbar-thumb {
+			background-color: #c1c1c1;
+		}
+
+		ul .liTitle {
+			border-bottom: none;
+			background-color: #dee9ff;
+			padding: 0 32px;
+			justify-content: space-between;
+			font-family: "PingFang-SC-Bold";
+			color: #333333;
+			font-weight: bold;
+		}
+
+		.buttonSpan {
+			display: inline-block;
+			width: 57px;
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+			color: #fff;
+			border-radius: 10px;
+			background: linear-gradient(to right, #2d6aff, #25b7ff);
+			cursor: pointer;
+			vertical-align: middle;
+		}
+
+		.buttonSpan:hover {
+			background: linear-gradient(to right, #ff8b2d, #fac800);
+		}
+
+		.box {
+			display: inline-block;
+			position: relative;
+			width: 77px;
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+			color: #fff;
+			border-radius: 10px;
+			background: linear-gradient(to right, #2d6aff, #25b7ff);
+			cursor: pointer;
+			overflow: hidden;
+			vertical-align: middle;
+			cursor: pointer;
+
+		}
+
+		.tip {
+			display: inline-block;
+			vertical-align: middle;
+			max-width: 260px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			background: #6bc7f5;
+			border-radius: 10px;
+		}
+
+		.box input {
+			opacity: 0;
+			left: 0;
+			z-index: 999;
+			position: absolute;
+			font-size: 0;
+			width: 77px;
+			height: 22px;
+		}
+
+		.box span {
+			position: absolute;
+			width: 100%;
+			top: 0;
+			left: 0;
+		}
+
+		.box:hover {
+			background: linear-gradient(to right, #ff8b2d, #fac800)
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<img src="/image/bg_01.png" class="containerBg" />
+		<div class="containerBotBg"></div>
+		<div class="title">系统工具箱</div>
+		<div class="title1"><a href="/list.html">目录清单</a></div>
+		<div class="fileBox">
+			<div class="fileBoxItem">
+				<div class="fileBoxType">
+					<div class="fileBoxTypeCont">
+						<img src="/image/fileType2.png" />
+						<span class="fileTypeTxt">研发环境软件</span>
+					</div>
+				</div>
+				<ul>
+					<li class="liTitle">
+						<span>序号</span>
+						<span>文件名</span>
+						<span>操作</span>
+					</li>
+					<div id="sys_iso" class="fileInner">
+					</div>
+				</ul>
+			</div>
+
+			<div class="fileBoxItem">
+				<div class="fileBoxType">
+					<div class="fileBoxTypeCont">
+						<img src="/image/fileType3.png" />
+						<span class="fileTypeTxt">系统镜像</span>
+					</div>
+
+				</div>
+				<ul>
+					<li class="liTitle">
+						<span>序号</span>
+						<span>文件名</span>
+						<span>操作</span>
+					</li>
+					<div id="normal" class="fileInner">
+					</div>
+
+				</ul>
+			</div>
+
+			<div class="fileBoxItem">
+				<div class="fileBoxType">
+					<div class="fileBoxTypeCont">
+						<img src="/image/fileType1.png" />
+						<span class="fileTypeTxt">系统常用软件</span>
+					</div>
+				</div>
+				<ul>
+					<li class="liTitle">
+						<span>序号</span>
+						<span>文件名</span>
+						<span>操作</span>
+					</li>
+					<div id="software" class="fileInner">
+					</div>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script> -->
+<script type="text/javascript">
+
+	function download(fileName) {
+		const downloadLink = document.createElement('a');
+		downloadLink.href = fileName;
+		downloadLink.download = fileName;
+		downloadLink.click();
+	}
+	fetch('http://localhost:8080/api/file/list?pageSize=99999&pageNum=1', {
+		method: 'GET',
+	})
+		.then(response => response.json())
+		.then(data => {
+			// 处理返回的数据
+			const sys_isoFiles = [];
+			const normalFiles = [];
+			const softwareFiles = [];
+
+			data.rows.forEach(file => {
+				if (file.ftype === 'sys_iso') {
+					sys_isoFiles.push(file);
+				} else if (file.ftype === 'normal') {
+					normalFiles.push(file);
+				} else if (file.ftype === 'software') {
+					softwareFiles.push(file);
+				}
+			});
+			// 将文件项渲染到页面中
+			const filesys_iso = document.getElementById('sys_iso');
+			const filenormal = document.getElementById('normal');
+			const filesoftware = document.getElementById('software');
+			// 渲染 sys_iso 文件列表
+			for (let i = 0; i < sys_isoFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `<span>${i + 1}</span>
+            <span>${sys_isoFiles[i].name}</span>
+            <span class="buttonSpan" onclick="download('${sys_isoFiles[i].url}?name=${sys_isoFiles.name}')">下载</span>`;
+				filenormal.appendChild(listItem);
+			}
+
+			// 渲染 normal 文件列表
+
+			for (let i = 0; i < normalFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `<span>${i + 1}</span>
+            <span>${normalFiles[i].name}</span>
+            <span class="buttonSpan" onclick="download('${normalFiles[i].url}?name=${normalFiles.name}')">下载</span>`;
+				filesoftware.appendChild(listItem);
+			}
+
+			// 渲染 software 文件列表
+			for (let i = 0; i < softwareFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `<span>${i + 1}</span>
+            <span>${softwareFiles[i].name}</span>
+            <span class="buttonSpan" onclick="download('${softwareFiles[i].url}?name=${softwareFiles.name}')">下载</span>`;
+				filesys_iso.appendChild(listItem);
+			}
+		})
+		.catch(error => {
+			// 处理错误
+			console.error(error);
+		});
+</script>
+
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BiFileMapper">
+    
+    <resultMap type="BiFile" id="BiFileResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="version"    column="version"    />
+        <result property="os"    column="os"    />
+        <result property="ftype"    column="ftype"    />
+        <result property="url"    column="url"    />
+        <result property="size"    column="size"    />
+        <result property="remark"    column="remark"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBiFileVo">
+        select id, name, version, os, ftype, url, size, remark, add_time, update_time from bi_file
+    </sql>
+
+    <select id="selectBiFileList" parameterType="BiFile" resultMap="BiFileResult">
+        <include refid="selectBiFileVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="version != null  and version != ''"> and version like concat('%', #{version}, '%')</if>
+            <if test="os != null  and os != ''"> and os = #{os}</if>
+            <if test="ftype != null  and ftype != ''"> and ftype = #{ftype}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="size != null "> and size = #{size}</if>
+            <if test="addTime != null "> and add_time = #{addTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectBiFileById" parameterType="Long" resultMap="BiFileResult">
+        <include refid="selectBiFileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBiFile" parameterType="BiFile" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="version != null and version != ''">version,</if>
+            <if test="os != null and os != ''">os,</if>
+            <if test="ftype != null and ftype != ''">ftype,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="size != null">size,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="addTime != null">add_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="version != null and version != ''">#{version},</if>
+            <if test="os != null and os != ''">#{os},</if>
+            <if test="ftype != null and ftype != ''">#{ftype},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="size != null">#{size},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="addTime != null">#{addTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBiFile" parameterType="BiFile">
+        update bi_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="version != null and version != ''">version = #{version},</if>
+            <if test="os != null and os != ''">os = #{os},</if>
+            <if test="ftype != null and ftype != ''">ftype = #{ftype},</if>
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="addTime != null">add_time = #{addTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBiFileById" parameterType="Long">
+        delete from bi_file where id = #{id}
+    </delete>
+
+    <delete id="deleteBiFileByIds" parameterType="String">
+        delete from bi_file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

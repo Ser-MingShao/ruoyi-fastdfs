@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增文件列表')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-file-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">文件名：</label>
+            <div class="col-sm-8">
+                <input name="name" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">文件版本：</label>
+            <div class="col-sm-8">
+                <input name="version" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">适用系统：</label>
+            <div class="col-sm-8">
+                <input name="os" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">文件类型：</label>
+            <div class="col-sm-8">
+                <select name="ftype" class="form-control m-b" th:with="type=${@dict.getType('bi_file_type')}" required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">文件路径：</label>
+            <div class="col-sm-8">
+                <input id="url" name="url" class="form-control" type="text" style="display:none" required>
+                <input id="filePath" class="form-control" type="file" required>
+            </div>
+        </div>
+        <div class="form-group" style="display: none">
+            <label class="col-sm-3 control-label is-required">文件大小：</label>
+            <div class="col-sm-8">
+                <input id="size" name="size" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label is-required">文件备注：</label>
+            <div class="col-sm-8">
+                <textarea name="remark" class="form-control" required></textarea>
+            </div>
+        </div>
+        <div id="upload-process-area" class="form-group">
+            <hr/>
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-8" style="display: flex; justify-content: space-between">
+                <div class="labels">
+                    <div><b>文件名称</b>: <span id="file_name"></span></div>
+                    <div><b>文件大小</b>: <span id="file_size">0B</span></div>
+                    <div><b>上传进度</b>: <span id="file_process">0</span>% / 100%</div>
+                </div>
+                <button id="btn-cancel" class="btn btn-warning" type="button">取消</button>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<script th:inline="javascript">
+    var prefix = ctx + "system/file"
+    var host = [[${fsHost}]]
+    var port = [[${fsPort}]]
+    var xhr
+    var $processArea = $('#upload-process-area')
+    $processArea.hide()
+
+    function getfilesize(size) {//把字节转换成正常文件大小
+        if (!size) return "";
+        var num = 1024.00; //byte
+        if (size < num)
+            return size + "B";
+        if (size < Math.pow(num, 2))
+            return (size / num).toFixed(2) + "KB"; //kb
+        if (size < Math.pow(num, 3))
+            return (size / Math.pow(num, 2)).toFixed(2) + "MB"; //M
+        if (size < Math.pow(num, 4))
+            return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
+        return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
+    }
+
+    $("#form-file-add").validate({
+        focusCleanup: true
+    });
+    var isUploading = false;
+
+    $("#btn-cancel").click(() => {
+        if (!xhr) return
+        xhr.abort('取消')
+    })
+
+    function getFileExtension(fileName) {
+        var parts = fileName.split('.');
+        if (parts.length === 1 || (parts[0] === '' && parts.length === 2)) {
+            return '';
+        }
+        return parts.pop();
+    }
+
+    function submitHandler() {
+        if (isUploading) {
+            $.modal.msgWarning('请勿重复提交..');
+            return
+        }
+        isUploading = true
+        if ($.validate.form()) {
+            $.modal.msgWarning('正在上传中..');
+            // 上传文件, 并给 url 赋值
+            var formData = new FormData();
+            var form = $('#form-file-add');
+            var nameObj = $("#form-file-add input[name='name']")
+            var newFileName = nameObj.val() + '.' + this.getFileExtension(form[0][5].files[0].name);
+            formData.append('file', form[0][5].files[0]);
+            formData.append('scene', 'default');
+            formData.append('filename', newFileName);
+            formData.append('output', 'json2');
+            formData.append('path', '/f/');
+            formData.append('code', '');
+            formData.append('auth_token', '');
+            console.log(newFileName)
+            var $file_name = $('#file_name');
+            var $file_size = $('#file_size');
+            var $file_process = $('#file_process');
+            $file_name.html(newFileName);
+            var fileObj = form[0][5].files[0];
+            $file_size.html(getfilesize(fileObj.size));
+            $file_process.html('0');
+            $processArea.show()
+
+            xhr = $.ajax({
+                url: `http://${host}:${port}/group1/upload`,
+                type: 'POST',
+                cache: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function () {
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function (e) {
+                            var percentage = parseInt(e.loaded / e.total * 100)
+                            $file_process.html(percentage)
+                        }, false);
+                    }
+                    return xhr;
+                }
+            }).done(function (res) {
+                $.modal.msgSuccess('上传成功!');
+                var sizeObj = $("#form-file-add input[name='size']")
+                var urlObj = $("#form-file-add input[name='url']")
+                var result = JSON.parse(res);
+                var data = result.data
+                sizeObj.val(data['size'])
+                var url = new URL(data['url']);
+                var urlPrefix = url.origin + url.pathname;
+                urlObj.val(urlPrefix)
+                var formObject = {};
+                form.serialize().split('&').forEach(function (item) {
+                    var parts = item.split('=');
+                    var key = decodeURIComponent(parts[0]);
+                    var value = decodeURIComponent(parts[1]);
+                    formObject[key] = value;
+                });
+                formObject.name = newFileName;
+
+                // 构建修改后的表单数据
+                var modifiedFormData = Object.keys(formObject).map(function (key) {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(formObject[key]);
+                }).join('&');
+
+                // 打印修改后的表单数据
+                $.operate.save(prefix + "/add", modifiedFormData, () => {
+                    $processArea.hide()
+                })
+                isUploading = false;
+            }).fail(function (res) {
+                if (res.statusText === '取消') {
+                    $.modal.msgError("取消上传");
+                } else {
+                    $.modal.msgError("上传失败");
+                }
+                $processArea.hide()
+                isUploading = false;
+            });
+        } else {
+            isUploading = false;
+        }
+    }
+
+    $("input[name='addTime']").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+</script>
+</body>
+</html>

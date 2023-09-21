@@ -1,0 +1,22 @@
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'PingFang-SC-Bold';
+  /* 引入字体 */
+  src: url('./PingFang-SC-Bold.ttf');
+  
+}
+
+@font-face {
+  font-family: 'FZZCHJW--GB1-0';
+  src: url('./FZZCHJW--GB1-0_zitidi.com.ttf');  
+}
+
+@font-face {
+  font-family: 'FZLTZHK--GBK1-0';
+  src: url('./FZLTZHK--GBK1-0_zitidi.com.ttf'); 
+}
+
+@font-face {
+  font-family: 'PingFang-SC-Medium';
+  src: url('./PingFang Medium.otf');  
+}

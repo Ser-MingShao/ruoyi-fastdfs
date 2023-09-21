@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>系统工具箱</title>
+	<link rel="stylesheet" href="/font/font.css" />
+	<style>
+		ul {
+			list-style: none;
+		}
+	</style>
+</head>
+
+<body>
+	<ul>
+		<li>一、研发环境软件</li>
+		<li>
+			<ul>
+				<li id="sys_iso">
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<ul>
+		<li>二、系统镜像</li>
+		<li>
+			<ul>
+				<li id="normal">
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<ul>
+		<li>三、系统常用软件</li>
+		<li>
+			<ul>
+				<li id="software">
+				</li>
+			</ul>
+		</li>
+	</ul>
+</body>
+
+</html>
+<script type="text/javascript">
+
+	function download(fileName) {
+		const downloadLink = document.createElement('a');
+		downloadLink.href = fileName;
+		downloadLink.download = fileName;
+		downloadLink.click();
+	}
+	fetch('http://localhost:8080/api/file/list', {
+		method: 'GET',
+	})
+		.then(response => response.json())
+		.then(data => {
+			// 处理返回的数据
+			const sys_isoFiles = [];
+			const normalFiles = [];
+			const softwareFiles = [];
+
+			data.rows.forEach(file => {
+				if (file.ftype === 'sys_iso') {
+					sys_isoFiles.push(file);
+				} else if (file.ftype === 'normal') {
+					normalFiles.push(file);
+				} else if (file.ftype === 'software') {
+					softwareFiles.push(file);
+				}
+			});
+			// 将文件项渲染到页面中
+			const filesys_iso = document.getElementById('sys_iso');
+			const filenormal = document.getElementById('normal');
+			const filesoftware = document.getElementById('software');
+			// 渲染 sys_iso 文件列表
+			for (let i = 0; i < sys_isoFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `
+            <span>${sys_isoFiles[i].name}</span>
+            `;
+				filenormal.appendChild(listItem);
+			}
+
+			// 渲染 normal 文件列表
+
+			for (let i = 0; i < normalFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `
+            <span>${normalFiles[i].name}</span>
+            `;
+				filesoftware.appendChild(listItem);
+			}
+
+			// 渲染 software 文件列表
+			for (let i = 0; i < softwareFiles.length; i++) {
+				const listItem = document.createElement('li');
+				listItem.innerHTML = `
+            <span>${softwareFiles[i].name}</span>
+            `;
+				filesys_iso.appendChild(listItem);
+			}
+		})
+		.catch(error => {
+			// 处理错误
+			console.error(error);
+		});
+</script>
